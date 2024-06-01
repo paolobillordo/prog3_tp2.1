@@ -3,14 +3,78 @@ class Currency {
         this.code = code;
         this.name = name;
     }
+
+    set code(new_code) {
+        this._code = new_code;
+    }
+    
+    set name(new_name) {
+        this._name = new_name
+    }
+
+    get code() {
+        return this._code;
+    }
+
+    get name() {
+        return this._name;
+    }
+
 }
 
 class CurrencyConverter {
-    constructor() {}
+    constructor(apiUrl) {
+        this.apiUrl = apiUrl;
+        this.currencies = []
+    }
 
-    getCurrencies(apiUrl) {}
+    addCurrency(currency) {
+        this.currencies.push(currency);
+    }
 
-    convertCurrency(amount, fromCurrency, toCurrency) {}
+    set apiUrl(apiUrl) {
+        this._apiUrl = apiUrl;
+    }
+
+    get apiUrl() {
+        return this._apiUrl;
+    }
+
+    async getCurrencies() {
+        try {            
+            const response = await fetch(this.apiUrl + "/currencies");
+            if (response.ok) {
+                const coins = await response.json();
+                console.log(coins)
+                Object.entries(coins).forEach(([key, value]) => {
+                    let new_currency = new Currency (key,value)
+                    this.addCurrency(new_currency)
+                })
+            };
+            
+        } catch (error) {
+            console.error(`Ocurrio un error: ${error.message}`);            
+        }
+
+    }
+
+    async convertCurrency(amount, fromCurrency, toCurrency) {
+        if (fromCurrency == toCurrency) {
+            return parseFloat(amount)
+        }
+        try {
+            console.log(fromCurrency, toCurrency)
+            const response = await fetch(this.apiUrl + `/latest?amount=${amount}&from=${fromCurrency.code}&to=${toCurrency.code}`);
+            if (response.ok) {
+                const amount_converted = await response.json();                
+                return amount_converted.rates[toCurrency.code]                
+            };
+        } catch (error) {
+            console.error(`Ocurrio un error: ${error.message}`);
+            return null;
+        }
+
+    }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

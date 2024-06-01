@@ -85,7 +85,7 @@ class SensorManager {
                         this.addSensor(new_sensor);
 
                     } catch (error) {
-                        console.error(`Error al cagrgar sensor: ${error.message}`);
+                        console.error(`Error al cargar sensor: ${error.message}`);
                     }                    
                 });
                 
