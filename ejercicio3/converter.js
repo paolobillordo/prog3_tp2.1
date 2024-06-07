@@ -3,23 +3,7 @@ class Currency {
         this.code = code;
         this.name = name;
     }
-
-    set code(new_code) {
-        this._code = new_code;
-    }
     
-    set name(new_name) {
-        this._name = new_name
-    }
-
-    get code() {
-        return this._code;
-    }
-
-    get name() {
-        return this._name;
-    }
-
 }
 
 class CurrencyConverter {

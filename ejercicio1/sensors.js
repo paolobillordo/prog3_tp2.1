@@ -13,13 +13,12 @@ class Sensor {
         this.updated_at = new Date().toISOString();
     }
 
-    set type(value) {
+    set type(type) {
         const types_ok = ['temperature', 'humidity', 'pressure'];
-        if (!types_ok.includes(value)) {
-            console.log("Tipo de sensor invalido")
-            throw new Error(`El tipo de sensor ${value} es inválido`);
+        if (!types_ok.includes(type)) {
+            throw new Error(`El tipo de sensor ${type} es inválido`);
         }else {
-            this._type = value;
+            this._type = type;
         }
     }
 
@@ -70,7 +69,6 @@ class SensorManager {
             const response = await fetch(url);
             if (response.ok) {
                 const sensors_json = await response.json();
-                console.log(sensors_json)
                 sensors_json.forEach(element => {
                     try {
                         let new_sensor = new Sensor(
@@ -81,7 +79,6 @@ class SensorManager {
                             element.unit,
                             element.updated_at                        
                         )
-                        console.log(new_sensor);
                         this.addSensor(new_sensor);
 
                     } catch (error) {

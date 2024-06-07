@@ -3,23 +3,7 @@ class Customer {
         this.id = id;
         this.name = name;
         this.email = email
-    }
-
-    set name(name) {
-        this._name = name
-    }
-
-    set email(email) {
-        this._email = email
-    }
-
-    get name() {
-        return this._name;
-    }
-
-    get email() {
-        return this._email;
-    }
+    }   
 
     get info() { return `${this.name} ${this.email}` }
 }

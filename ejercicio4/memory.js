@@ -131,6 +131,13 @@ class MemoryGame {
         this.flipDuration = flipDuration;
         this.board.onCardClick = this.#handleCardClick.bind(this);
         this.board.reset();
+        this.count = 0;
+        this.points = 0;
+        this.maxPoints = 10000;
+        this.pointsElement = document.getElementById('points');
+        this.timerElement = document.getElementById('time');
+        this.time = 0;
+        this.timerInterval = null;
     }
 
     #handleCardClick(card) {
@@ -147,18 +154,53 @@ class MemoryGame {
     checkForMatch() {
         let cards = this.flippedCards;
         if (cards[0].matches(cards[1])) {
-            this.matchedCards.push(cards[0])
-            this.matchedCards.push(cards[1])            
+            this.pointsEarned();
+            this.matchedCards.push(cards[0]);
+            this.matchedCards.push(cards[1]);            
+            if (this.matchedCards.length === 12) {
+                this.stopTime()
+                this.maxPoints = 10000;
+            }           
         } else {
             cards[0].toggleFlip()
             cards[1].toggleFlip()
         }
-        this.flippedCards = []
+        this.flippedCards = [];
+        this.count += 1;
+        this.pointsElement.textContent = `Intentos: ${this.count} Puntos: ${this.points}`;
+    }
+
+    startTime() {
+        return new Promise((resolve) => {
+            this.timerInterval = setInterval(() => {
+                this.time++;
+                this.timerElement.textContent = `Tiempo: ${this.time} segundos`;
+            }, 1000);
+            resolve();
+        });
+    }
+
+    stopTime() {
+        return new Promise((resolve) => {
+            clearInterval(this.timerInterval);
+            resolve();
+        });
     }
 
     resetGame() {
-        this.board.reset()
-        this.matchedCards = []
+        this.board.reset();
+        this.matchedCards = [];
+        this.count = 0;
+        this.time = 0;
+        this.points = 0;
+        this.pointsElement.textContent = `Intentos: 0 Puntos: 0`;
+        this.startTime()
+    }
+
+    pointsEarned() {
+        this.maxPoints = this.maxPoints - (this.time * this.count * 10);
+        this.points += this.maxPoints;
+        console.log(this.points)
     }
 }
 
@@ -178,6 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ]);
     const board = new Board(cards);
     const memoryGame = new MemoryGame(board, 1000);
+    memoryGame.resetGame();
 
     document.getElementById("restart-button").addEventListener("click", () => {
         memoryGame.resetGame();
