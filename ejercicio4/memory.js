@@ -159,6 +159,7 @@ class MemoryGame {
             this.matchedCards.push(cards[1]);            
             if (this.matchedCards.length === 12) {
                 this.stopTime()
+                this.pointsElement.textContent = `Termino el juego, hiciste ${this.points} puntos en ${this.count} intentos`;
                 this.maxPoints = 10000;
             }           
         } else {
@@ -167,7 +168,9 @@ class MemoryGame {
         }
         this.flippedCards = [];
         this.count += 1;
-        this.pointsElement.textContent = `Intentos: ${this.count} Puntos: ${this.points}`;
+        if (this.matchedCards.length < 12) {
+            this.pointsElement.textContent = `Intentos: ${this.count} Puntos: ${this.points}`;            
+        }
     }
 
     startTime() {
@@ -199,8 +202,10 @@ class MemoryGame {
 
     pointsEarned() {
         this.maxPoints = this.maxPoints - (this.time * this.count * 10);
-        this.points += this.maxPoints;
-        console.log(this.points)
+        if (this.maxPoints > 0) {
+            this.points += this.maxPoints;
+            console.log(this.points)
+        }
     }
 }
 
